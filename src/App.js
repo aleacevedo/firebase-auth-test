@@ -17,19 +17,53 @@ import "firebase/auth";
 function App() {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [customToken, setCustomToken] = useState("");
 
+  var provider = new firebase.auth.GithubAuthProvider();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(emailOrUsername, password)
     firebase.auth().createUserWithEmailAndPassword(emailOrUsername, password).then(
       (userCredential) => {
+        userCredential.user.updateProfile({ username: 'myusername' })
         console.log(userCredential);
         console.log(userCredential.user)
       }
     ).catch(error => {
       console.log(error)
     })
+  };
+  const handleSubmitSithCustomToken = (event) => {
+    firebase.auth().signOut();
+    event.preventDefault();
+    console.log(firebase.auth().currentUser)
+    firebase.auth().signInWithCustomToken(customToken).then(
+      (userCredential) => {
+        console.log(userCredential);
+        console.log(userCredential.user)
+        firebase.auth().currentUser.getIdToken(true).then(console.log);
+      }
+    ).catch(error => {
+      console.log(error)
+    })
+  };
+
+  const handleGithub = (event) => {
+    event.preventDefault();
+    console.log(emailOrUsername, password)
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(
+        (userCredential) => {
+          console.log(userCredential);
+          console.log(userCredential.user);
+          firebase.auth().currentUser.getIdToken(true).then(console.log);
+        }
+      ).catch(error => {
+        console.log(error)
+      })
   };
 
 
@@ -66,6 +100,23 @@ function App() {
                 />
               </FormGroup>
               <Button type="submit">Log In</Button>
+              <Button onClick={handleGithub}>Github</Button>
+            </Form>
+            <Form onSubmit={handleSubmitSithCustomToken}>
+              <FormGroup>
+                <label htmlFor="#customToken">Password</label>
+                <FormInput
+                  type="customToken"
+                  id="#customToken"
+                  placeholder="Custom Token"
+                  value={customToken}
+                  onChange={(event) => {
+                    event.preventDefault();
+                    setCustomToken(event.target.value);
+                  }}
+                />
+              </FormGroup>
+              <Button type="submit">Log In WITH CUSTOM TOKEN</Button>
             </Form>
           </CardBody>
         </Card>
