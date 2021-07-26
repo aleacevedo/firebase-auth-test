@@ -10,7 +10,8 @@ import {
   Card,
   CardHeader,
   Button,
-  Col
+  Col,
+  FormTextarea
 } from "shards-react";
 
 import firebase from "firebase/app";
@@ -21,6 +22,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [customToken, setCustomToken] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [idToken, setIdToken] = useState("");
 
   var provider = new firebase.auth.GithubAuthProvider();
 
@@ -45,8 +47,10 @@ function App() {
       (userCredential) => {
         console.log(userCredential);
         console.log(userCredential.user);
-        firebase.auth().currentUser.getIdToken(true).then(console.log);
-      }
+        firebase.auth().currentUser.getIdToken(true).then((token) => {
+          console.log(token);
+          setIdToken(token);
+        });      }
     ).catch(error => {
       console.log(error);
     })
@@ -63,8 +67,10 @@ function App() {
           console.log(userCredential.user);
           const isNew = userCredential.additionalUserInfo.isNewUser;
           if (isNew) userCredential.user.updateProfile({ displayName: userCredential.user.providerData[0].displayName });
-          firebase.auth().currentUser.getIdToken(true).then(console.log);
-        }
+          firebase.auth().currentUser.getIdToken(true).then((token) => {
+            console.log(token);
+            setIdToken(token);
+          });        }
       ).catch(error => {
         console.log(error);
       })
@@ -79,7 +85,10 @@ function App() {
         (userCredential) => {
           console.log(userCredential);
           console.log(userCredential.user);
-          firebase.auth().currentUser.getIdToken(true).then(console.log);
+          firebase.auth().currentUser.getIdToken(true).then((token) => {
+            console.log(token);
+            setIdToken(token);
+          });
         }
       ).catch(error => {
         console.log(error);
@@ -219,6 +228,15 @@ function App() {
               </FormGroup>
               <Button type="submit">Log In WITH CUSTOM TOKEN</Button>
             </Form>
+          </CardBody>
+        </Card>
+        <hr />
+        <Card>
+          <CardHeader>
+            ID - TOKEN
+          </CardHeader>
+          <CardBody>
+            <FormTextarea value={idToken} disable={true} />
           </CardBody>
         </Card>
       </Container>
