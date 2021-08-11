@@ -108,7 +108,7 @@ function App() {
             <Form onSubmit={handleSignUp}>
               <FormGroup row>
                 <Col>
-                  <label htmlFor="#usernameOrUsername">Email/Username</label>
+                  <label htmlFor="#usernameOrUsername">Email</label>
                 </Col>
                 <Col>
                   <FormInput
